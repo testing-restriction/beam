@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -12,31 +14,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-name: pr-bot-new-prs
-
-# Run every 30 minutes
-on:
-  schedule:
-  - cron: '0,30 * * * *'
-  workflow_dispatch:
-
-jobs:
-  process-prs:
-    # Don't run on forks
-    if: github.repository == 'apache/beam'
-    runs-on: [self-hosted, ubuntu-20.04]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install pr-bot npm dependencies
-        run: npm ci
-        working-directory: 'scripts/ci/pr-bot'
-      # Runs a set of commands using the runners shell
-      - run: npm run processNewPrs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: 'scripts/ci/pr-bot'
+kubectl apply -f github-actions-secrets.yml
+kubectl apply -f github-actions-deployment.yml
+kubectl apply -f github-actions-hpa.yml
+gcloud container clusters update  github-actions-linux-runners --enable-vertical-pod-autoscaling --zone us-central1-a
+kubectl apply -f github-actions-vpa.yml
