@@ -36,7 +36,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_TERSE true
 
 
-# hadolint ignore=DL3008
+# hadolint ignore=DL3008 Local env
 ###
 # Update and install common packages
 ###
